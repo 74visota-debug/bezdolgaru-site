@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="wrap">
+  <nav class="crumbs"><a href="/">Главная</a> › <a href="/baza/">Статьи</a> › <a href="/baza/#{{ a.section }}">{{ sections[a.section] }}</a></nav>
+</div>
+<article class="wrap article">
+  <h1>{{ a.title }}</h1>
+  <div class="meta">Обновлено: <time datetime="{{ a.updated }}">{{ a.updated_ru }}</time> · {{ cfg.author }} · {{ a.minutes }} мин чтения</div>
+  <div class="answer"><div class="answer-h">Коротко</div>{{ a.short_html|safe }}</div>
+  <div class="prose">{{ a.html|safe }}</div>
+  {% if a.cta %}
+  <div class="cta-box">
+    <div><div class="cta-h">{{ a.cta.title }}</div><p>{{ a.cta.text }}</p></div>
+    <a class="btn" href="{{ a.cta.href }}" {% if a.cta.href.startswith('http') %}rel="nofollow"{% endif %} data-goal="cta">{{ a.cta.button }}</a>
+  </div>
+  {% endif %}
+  {% if a.faq %}
+  <section class="faq">
+    <h2>Частые вопросы</h2>
+    {% for f in a.faq %}<details><summary>{{ f.q }}</summary><p>{{ f.a }}</p></details>{% endfor %}
+  </section>
+  {% endif %}
+  {% if a.sources %}
+  <section class="sources"><div class="foot-h">Источники</div>
+    <ul>{% for s in a.sources %}<li><a href="{{ s.url }}" rel="nofollow noopener" target="_blank">{{ s.title }}</a></li>{% endfor %}</ul>
+  </section>
+  {% endif %}
+  {% if related %}
+  <section class="related"><h2>Читайте также</h2>
+    <div class="cards">{% for r in related %}<a class="card" href="{{ r.url }}"><span class="tag">{{ sections[r.section] }}</span><b>{{ r.title }}</b></a>{% endfor %}</div>
+  </section>
+  {% endif %}
+</article>
+{% endblock %}

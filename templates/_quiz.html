@@ -1,0 +1,16 @@
+<div class="calc quiz" id="quiz">
+  <div class="calc-h">Подходит ли вам банкротство?</div>
+  <label>Общая сумма долгов, ₽
+    <input id="q-debt" type="number" inputmode="numeric" min="0" step="10000" placeholder="например, 450000">
+  </label>
+  <div class="err" id="q-err" hidden>Введите сумму долга</div>
+  <div class="q"><div class="q-h">Есть просрочка по платежам больше 3 месяцев?</div>
+    <div class="opts"><label><input type="radio" name="q-late" value="1">Да</label><label><input type="radio" name="q-late" value="0">Нет</label></div></div>
+  <div class="q"><div class="q-h">Приставы закрыли исполнительное производство, потому что нет имущества?</div>
+    <div class="opts"><label><input type="radio" name="q-fssp" value="1">Да</label><label><input type="radio" name="q-fssp" value="0">Нет</label><label><input type="radio" name="q-fssp" value="2">Не знаю</label></div></div>
+  <div class="q"><div class="q-h">Есть имущество, кроме единственного жилья? (машина, вторая квартира, дача)</div>
+    <div class="opts"><label><input type="radio" name="q-prop" value="1">Да</label><label><input type="radio" name="q-prop" value="0">Нет</label></div></div>
+  <button class="btn btn-full" type="button" id="q-go" data-goal="quiz">Узнать результат</button>
+  <div id="q-out" aria-live="polite"></div>
+  <p class="muted small">Тест даёт предварительную оценку, а не юридическое заключение. Окончательное решение принимает МФЦ или арбитражный суд.</p>
+</div>

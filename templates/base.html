@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page_title }}</title>
+<meta name="description" content="{{ description }}">
+{% if noindex %}<meta name="robots" content="noindex, follow">{% endif %}
+<link rel="canonical" href="{{ cfg.site_url }}{{ url }}">
+<meta property="og:type" content="{{ og_type|default('website') }}">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:url" content="{{ cfg.site_url }}{{ url }}">
+<meta property="og:image" content="{{ cfg.site_url }}/assets/og.png">
+<meta property="og:locale" content="ru_RU">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css?v={{ build_id }}">
+{% for s in schema %}<script type="application/ld+json">{{ s|safe }}</script>
+{% endfor %}
+{% if cfg.yandex_metrika_id %}<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");ym({{ cfg.yandex_metrika_id }},"init",{webvisor:true,clickmap:true,trackLinks:true,accurateTrackBounce:true});window.YM_ID={{ cfg.yandex_metrika_id }};</script>{% endif %}
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <a class="logo" href="/"><img src="/assets/logo.png" alt="" width="36" height="36"><span>{{ cfg.site_name }}</span></a>
+    <button class="burger" aria-label="Меню" onclick="document.body.classList.toggle('menu-open')"><span></span><span></span><span></span></button>
+    <nav class="nav">
+      <a href="/baza/">Статьи</a>
+      <a href="/voprosy/bankrotstvo-cherez-mfc-usloviya/">Банкротство через МФЦ</a>
+      <a href="/test/podhodit-li-bankrotstvo/">Тест: подходит ли</a>
+      <a href="/o-proekte/">О проекте</a>
+      <a class="btn btn-sm" href="/test/podhodit-li-bankrotstvo/" data-goal="quiz">Проверить за 2 минуты</a>
+    </nav>
+  </div>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div>
+      <div class="foot-logo">{{ cfg.site_name }}</div>
+      <p>{{ cfg.tagline }}.</p>
+      <p class="muted">{{ cfg.legal_line }}</p>
+    </div>
+    <div>
+      <div class="foot-h">Разделы</div>
+      <a href="/baza/">Все статьи</a><a href="/voprosy/bankrotstvo-cherez-mfc-usloviya/">Банкротство через МФЦ</a><a href="/test/podhodit-li-bankrotstvo/">Тест «Подходит ли банкротство»</a>
+    </div>
+    <div>
+      <div class="foot-h">Проект</div>
+      <a href="/o-proekte/">О проекте</a><a href="/kak-my-zarabatyvaem/">Как мы зарабатываем</a><a href="/kontakty/">Контакты</a><a href="/politika/">Политика конфиденциальности</a><a href="/soglasie/">Согласие на передачу данных</a>
+    </div>
+    <div>
+      <div class="foot-h">Подписаться</div>
+      <a href="{{ cfg.tg_url }}" rel="nofollow">Канал в Telegram</a>{% if cfg.max_url %}<a href="{{ cfg.max_url }}" rel="nofollow">Канал в MAX</a>{% endif %}
+    </div>
+  </div>
+  <div class="wrap muted small">Материалы носят информационный характер и не являются юридической консультацией. Мы не гарантируем списание долгов — решение принимает суд или МФЦ. © {{ year }} {{ cfg.site_name }}</div>
+</footer>
+<script src="/assets/site.js?v={{ build_id }}" defer></script>
+</body>
+</html>

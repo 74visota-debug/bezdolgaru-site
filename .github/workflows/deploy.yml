@@ -1,0 +1,33 @@
+# Автопубликация: при каждом изменении в репозитории сайт собирается,
+# загружается на хостинг, Яндекс получает список страниц, а новые статьи
+# анонсируются в Telegram-канал.
+# Секреты (Settings → Secrets and variables → Actions):
+#   FTP_HOST, FTP_USER, FTP_PASSWORD, FTP_DIR  — доступ к хостингу (папка сайта, например public_html)
+#   TG_BOT_TOKEN, TG_CHAT_ID                    — для анонсов (необязательно)
+name: Публикация сайта
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install markdown pyyaml jinja2
+      - run: python3 build.py
+      - name: Загрузка на хостинг по FTP
+        run: |
+          sudo apt-get install -y lftp >/dev/null
+          lftp -u "${{ secrets.FTP_USER }}","${{ secrets.FTP_PASSWORD }}" "${{ secrets.FTP_HOST }}" \
+            -e "set ftp:ssl-allow yes; mirror -R --delete --verbose dist/ ${{ secrets.FTP_DIR }}; quit"
+      - name: Сообщить Яндексу о страницах (IndexNow)
+        run: python3 indexnow.py || true
+      - name: Анонс новых статей в Telegram
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: python3 scripts/announce_tg.py $(git diff --name-only --diff-filter=A HEAD~1 HEAD -- content/articles) || true

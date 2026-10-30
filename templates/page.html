@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="wrap"><nav class="crumbs"><a href="/">Главная</a> › {{ p.title }}</nav></div>
+<article class="wrap article">
+  <h1>{{ p.title }}</h1>
+  {% if p.updated_ru %}<div class="meta">Обновлено: {{ p.updated_ru }}</div>{% endif %}
+  <div class="prose">{{ p.html|safe }}</div>
+</article>
+{% endblock %}

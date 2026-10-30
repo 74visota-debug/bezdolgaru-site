@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="wrap"><nav class="crumbs"><a href="/">Главная</a> › Статьи</nav></div>
+<section class="wrap">
+  <h1>Статьи о банкротстве и долгах</h1>
+  <p class="lead">Ответы на конкретные вопросы о банкротстве, долгах и коллекторах. Каждая статья начинается с короткого ответа.</p>
+  {% for key, title in sections.items() %}{% if groups[key] %}
+  <h2 id="{{ key }}">{{ title }}</h2>
+  <div class="cards">{% for a in groups[key] %}<a class="card" href="{{ a.url }}"><b>{{ a.title }}</b><span class="muted small">{{ a.description }}</span></a>{% endfor %}</div>
+  {% endif %}{% endfor %}
+</section>
+{% endblock %}

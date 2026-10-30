@@ -1,0 +1,15 @@
+# Настройки сайта. Меняй только значения справа от двоеточия.
+site_name: "Жизнь без долгов"
+site_url: "https://bezdolgaru.ru"     # ← домен сайта о банкротстве
+tagline: "Банкротство, МФЦ, коллекторы и долги — честно и простым языком"
+author: "Редакция «Жизнь без долгов»"
+lead_url: "https://t.me/bezdolgaru"      # ← куда ведёт кнопка «Бесплатная консультация» (бот/форма партнёра)
+bot_url: "https://t.me/bezdolgaru"
+channel_url: "https://t.me/bezdolgaru"
+tg_url: "https://t.me/bezdolgaru"
+max_url: ""   # ← ссылка на канал «Жизнь без долгов» в MAX, когда появится
+email: "hello@bezdolgaru.ru"
+legal_line: "Самозанятый ФИО, ИНН 000000000000"
+partner_line: "ООО «Партнёр», ИНН 0000000000"   # ← юрлицо партнёра, которому передаются заявки
+yandex_metrika_id: "113941737"
+indexnow_key: "zbd-indexnow-key-change-me"

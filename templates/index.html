@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <h1>Долги стали неподъёмными? Разберёмся спокойно и честно</h1>
+      <p class="lead">Банкротство через МФЦ и через суд, коллекторы, микрозаймы, ипотека — простым языком. Без «гарантий» и запугивания: что реально можно сделать в вашей ситуации.</p>
+      <div class="hero-btns">
+        <a class="btn" href="/test/podhodit-li-bankrotstvo/" data-goal="quiz">Пройти тест за 2 минуты</a>
+        <a class="btn btn-ghost" href="/baza/">Читать статьи</a>
+      </div>
+      <ul class="ticks"><li>Опираемся на закон о банкротстве</li><li>Честно о последствиях</li><li>Консультация бесплатна</li></ul>
+    </div>
+    {% include "_quiz.html" %}
+  </div>
+</section>
+<section class="wrap block">
+  <h2>С чего начать</h2>
+  <div class="who">
+    <a class="who-card" href="/voprosy/bankrotstvo-cherez-mfc-usloviya/"><b>Долг до 1 млн ₽</b><span>Когда можно списать бесплатно через МФЦ</span></a>
+    <a class="who-card" href="/voprosy/skolko-stoit-bankrotstvo-fizlica/"><b>Долг больше 1 млн ₽</b><span>Судебное банкротство: цена и сроки</span></a>
+    <a class="who-card" href="/voprosy/kollektory-zvonyat-chto-delat/"><b>Звонят коллекторы</b><span>Что им можно и что делать</span></a>
+    <a class="who-card" href="/voprosy/chto-zaberut-pri-bankrotstve/"><b>Боюсь потерять жильё</b><span>Что останется после банкротства</span></a>
+  </div>
+</section>
+<section class="wrap block">
+  <h2>Популярные вопросы</h2>
+  <div class="cards">{% for a in latest %}<a class="card" href="{{ a.url }}"><span class="tag">{{ sections[a.section] }}</span><b>{{ a.title }}</b><span class="muted small">{{ a.description }}</span></a>{% endfor %}</div>
+  <p><a href="/baza/">Все статьи →</a></p>
+</section>
+<section class="band">
+  <div class="wrap block">
+    <h2>Почему нам можно доверять</h2>
+    <div class="trust">
+      <div><b>Только факты</b>Каждая цифра — со ссылкой на закон или официальный источник и датой обновления.</div>
+      <div><b>Честно о минусах</b>Рассказываем о последствиях банкротства так же подробно, как о плюсах.</div>
+      <div><b>Без давления</b>Консультация бесплатная и ни к чему не обязывает. Заявку передаём юристу-партнёру только с вашего согласия.</div>
+    </div>
+  </div>
+</section>
+<section class="wrap block faq">
+  <h2>Частые вопросы</h2>
+  {% for f in home_faq %}<details><summary>{{ f.q }}</summary><p>{{ f.a }}</p></details>{% endfor %}
+</section>
+<script>window.LEAD_URL={{ cfg.lead_url|tojson }};</script>
+{% endblock %}
