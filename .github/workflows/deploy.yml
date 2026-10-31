@@ -29,10 +29,11 @@ jobs:
             *) echo "СТОП: секрет FTP_DIR не заканчивается на $DOMAIN — проверьте секрет, иначе зальётся чужой сайт"; exit 1 ;;
           esac
       - name: Загрузка на хостинг по FTP
+        timeout-minutes: 12
         run: |
           sudo apt-get install -y lftp >/dev/null
           lftp -u "${{ secrets.FTP_USER }}","${{ secrets.FTP_PASSWORD }}" "${{ secrets.FTP_HOST }}" \
-            -e "set ftp:ssl-allow yes; mirror -R --delete --verbose dist/ ${{ secrets.FTP_DIR }}; quit"
+            -e "set ftp:ssl-allow yes; set ftp:passive-mode on; set net:timeout 30; set net:max-retries 3; set net:reconnect-interval-base 5; mirror --parallel=4 -R --delete --verbose dist/ ${{ secrets.FTP_DIR }}; quit"
       - name: Сообщить Яндексу о страницах (IndexNow)
         run: python3 indexnow.py || true
       - name: Анонс новых статей в Telegram
