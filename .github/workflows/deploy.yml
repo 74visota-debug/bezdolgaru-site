@@ -19,6 +19,15 @@ jobs:
         with: { python-version: "3.12" }
       - run: pip install markdown pyyaml jinja2
       - run: python3 build.py
+      - name: Проверка папки на хостинге
+        env:
+          FTP_DIR: ${{ secrets.FTP_DIR }}
+        run: |
+          DOMAIN=$(python3 -c "import yaml;print(yaml.safe_load(open('config.yaml'))['site_url'].split('//')[1].strip('/'))")
+          case "${FTP_DIR%/}" in
+            *"$DOMAIN") echo "OK: заливаем в папку сайта $DOMAIN" ;;
+            *) echo "СТОП: секрет FTP_DIR не заканчивается на $DOMAIN — проверьте секрет, иначе зальётся чужой сайт"; exit 1 ;;
+          esac
       - name: Загрузка на хостинг по FTP
         run: |
           sudo apt-get install -y lftp >/dev/null
