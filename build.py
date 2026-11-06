@@ -15,7 +15,8 @@ env = Environment(loader=FileSystemLoader(ROOT / "templates"), autoescape=True)
 MONTHS = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"]
 SECTIONS = {"mfc": "Банкротство через МФЦ", "sud": "Судебное банкротство", "posledstviya": "Последствия и имущество",
             "kollektory": "Коллекторы и кредиторы", "mfo": "Микрозаймы и кредиты", "rabota": "Работа и доход при долгах", "varianty": "Другие варианты"}
-TODAY = dt.date.today()
+NOW = dt.datetime.now(dt.timezone(dt.timedelta(hours=3))).replace(tzinfo=None, second=0, microsecond=0)  # время по Москве
+TODAY = NOW.date()
 BUILD = uuid.uuid4().hex[:8]
 md = lambda t: markdown.markdown(t, extensions=["tables", "sane_lists"])
 
@@ -48,7 +49,10 @@ def write(url, tpl, **ctx):
     out.parent.mkdir(parents=True, exist_ok=True)
     base = dict(cfg=cfg, url=url, build_id=BUILD, year=TODAY.year, sections=SECTIONS, schema=[], noindex=False)
     base.update(ctx)
-    out.write_text(env.get_template(tpl).render(**base), encoding="utf-8")
+    html = env.get_template(tpl).render(**base)
+    if future_slugs:   # ссылки на ещё не вышедшие статьи — пока простым текстом
+        html = re.sub(r'<a href="/voprosy/(' + "|".join(map(re.escape, future_slugs)) + r')/"[^>]*>(.*?)</a>', r"\2", html, flags=re.S)
+    out.write_text(html, encoding="utf-8")
     if not base["noindex"] and url != "/404.html":
         pages.append((url, ctx.get("lastmod", TODAY.isoformat())))
 
@@ -60,8 +64,15 @@ if (ROOT / "root").exists():
 
 # --- статьи
 arts = []
+scheduled_today, scheduled_later, future_slugs = [], 0, set()
 for p in sorted((ROOT / "content/articles").glob("*.md")):
     a = read_md(p)
+    if a.get("publish"):   # отложенная публикация: "ГГГГ-ММ-ДД" (09:00) или "ГГГГ-ММ-ДД ЧЧ:ММ" по Москве
+        raw = str(a["publish"]).strip()
+        pub_dt = dt.datetime.fromisoformat(raw if len(raw) > 10 else raw + " 09:00")
+        if pub_dt > NOW: scheduled_later += 1; future_slugs.add(a["slug"]); continue
+        if NOW - pub_dt < dt.timedelta(hours=4): scheduled_today.append(f"content/articles/{p.name}")
+        a["updated"] = max(pub_dt.date(), a["updated"] if isinstance(a["updated"], dt.date) else dt.date.fromisoformat(str(a["updated"])))
     a["url"] = f"/voprosy/{a['slug']}/"
     upd = a["updated"] if isinstance(a["updated"], dt.date) else dt.date.fromisoformat(str(a["updated"]))
     a["updated"], a["updated_ru"] = upd.isoformat(), ru_date(upd)
@@ -132,3 +143,5 @@ sm.append("</urlset>")
 (DIST / f"{cfg['indexnow_key']}.txt").write_text(cfg["indexnow_key"], encoding="utf-8")
 (DIST / "urls.txt").write_text("\n".join(cfg["site_url"] + u for u, _ in pages), encoding="utf-8")
 print(f"Готово: {len(pages)} страниц в индексе, {len(arts)} статей → {DIST}")
+(DIST / "scheduled_today.txt").write_text("\n".join(scheduled_today), encoding="utf-8")
+print(f"Отложенные: сейчас вышло {len(scheduled_today)}, ждут своей даты {scheduled_later}")
